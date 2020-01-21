@@ -11,6 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/home.css">
 
     <!-- <style>
         body {
@@ -31,16 +32,28 @@
 
     <!-- Nav pills -->
     <!-- <nav class="navbar navbar-expand-sm bg-dark navbar-dark nav-tabs"> -->
-    <ul class="nav nav-pills bg-dark" role="tablist" background="black">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="pill" href="#home">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="pill" href="#menu1">Inventory</a>
-        </li>
-    </ul><br>
-
-    @yield('content')
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <div class="collapse navbar-collapse" >
+            <ul class="nav nav-pills navbar-nav mr-auto" role="tablist" background="black">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="pill" href="#home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="pill" href="#menu1">Inventory</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" method="GET" action="{{ url('search/')  }}">
+                {{ csrf_field() }}
+                <input name="name" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+    <br>
+    <div class="container">
+        @yield('content')
+        @yield('modal')
+    </div>
 
     <div class="jumbotron text-center footer" style="margin-bottom:0">
         <div class="footer-copyright text-center py-3">© 2020 Copyright: Christopher Alonzo</div>

@@ -18,73 +18,19 @@ use Illuminate\Http\Request;
 
 Route::group(['middleware' => ['web']], function () {
 
-    Route::get('/', function () {
-        return view('home', [
-            'nangutang' => Nangutang::orderBy('created_at', 'asc')->get(),
-            'items' => Items::orderBy('created_at', 'asc')->get()
-        ]);
-    });
+    Route::get('/', 'UserController@getAllData');
 
-    Route::get('/addNangutang', function() {
-        return view('addNangutang');
-    });
+    Route::get('/addNangutang', 'UserController@addNangutang');
 
-    Route::get('addItem' , function() {
-        return view('addItem');
-    });
+    Route::get('/editUtang', 'UserController@editUtang');
 
-    Route::post('/addUtang', function (Request $request) {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|max:255',
-            'middle_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'item' => 'required|max:255',
-            'quantity' => 'required',
-            'amount' => 'nullable'
-        ]);
+    Route::get('addItem' , 'UserController@addItem');
 
-        if ($validator->fails()) {
-            return redirect('/')
-                ->withInput()
-                ->withErrors($validator);
-        } else {
-            $nangutang = new Nangutang;
-            $nangutang->first_name = $request->first_name;
-            $nangutang->middle_name = $request->middle_name;
-            $nangutang->last_name = $request->last_name;
-            $nangutang->item = $request->item;
-            $nangutang->quantity = $request->quantity;
-            $nangutang->price = $request->price;
-            $nangutang->amount = $request->price * $request->quantity;
-            $nangutang->save();
+    Route::post('/addUtang', 'UserController@addUtang');
 
-            return redirect('/');
-        }
+    Route::post('addInventory', 'UserController@addInventory');
 
-        // Create The Task...
-    });
-
-    Route::post('addInventory', function(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'item' => 'required|max:255',
-            'quantity' => 'required',
-            'price' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect('/')
-                ->withInput()
-                ->withErrors($validator);
-        } else {
-            $item = new Items;
-            $item->item = $request->item;
-            $item->quantity = $request->quantity;
-            $item->price = $request->price;
-            $item->save();
-
-            return redirect('/');
-        }
-    });
+    Route::get('search', 'UserController@search');
 
     Route::delete('/utang/{id}', function($id) {
         Nangutang::findOrFail($id)->delete();
