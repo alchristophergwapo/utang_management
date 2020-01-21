@@ -48,7 +48,9 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                            <input type="submit" name="add_palautang" id="signup" class="form-submit btn-success" value="Add" />
+                            <button  class="btn btn-success btn-small" >
+                                <input type="submit" name="add_palautang" id="signup" class="form-submit btn" value="Add" />
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -82,13 +84,62 @@
                             <td><button><i class="fas fa-trash" style='font-size:24px;color:red'></i></button></td>
                         </form>
                         <td>
-                            <button type="submit button" class="btn"><i class='far fa-edit' style='font-size:24px'></i></button>
+                            <button type="submit" class="btn"><i class='far fa-edit' style='font-size:24px' data-toggle="modal" data-target="#editUtang"></i></button>
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
                 @endif
             </table>
+        </div>
+        <div class="modal fade" id="editUtang" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <form action="">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="form-title text-center">Add Utang</h2>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <input name="id" type="text" hidden/>
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label> -->
+                                <input class="form-control" type="text" name="first_name" id="first_name" />
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label> -->
+                                <input class="form-control" type="text" name="middle_name" id="middle_name" />
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label> -->
+                                <input class="form-control" type="text" name="last_name" id="last_name" />
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="email"><i class="zmdi zmdi-email"></i></label> -->
+                                <input class="form-control" type="text" name="item" id="item"/>
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="pass"><i class="zmdi zmdi-lock"></i></label> -->
+                                <input class="form-control" type="number" name="quantity" id="quantity"/>
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label> -->
+                                <input class="form-control" type="number" name="price" id="price"/>
+                            </div>
+                            <div class="form-group form-button">
+                                <input type="submit" name="update" id="signup" class="form-submit" value="Update"/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
         <!-- <button class="btn btn-outline-secondary"><a href="addNangutang">Add Nangutang</a></button> -->
     </div>
