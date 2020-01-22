@@ -18,29 +18,19 @@ use Illuminate\Http\Request;
 
 Route::group(['middleware' => ['web']], function () {
 
-    Route::get('/', 'UserController@getAllData');
+    Route::get('/', 'UserController@getAllData')->name('home');
 
-    Route::get('/addNangutang', 'UserController@addNangutang');
+    Route::match(['get','post'],'/editUtang/{id?}', 'UserController@utangEdit')->name('editUtang');
 
-    Route::get('/editUtang', 'UserController@editUtang');
+    Route::post('/addUtang', 'UserController@addUtang')->name('addUtang');
 
-    Route::get('addItem' , 'UserController@addItem');
+    Route::post('/addInventory', 'UserController@addInventory')->name('addItem');
 
-    Route::post('/addUtang', 'UserController@addUtang');
+    Route::get('/search', 'UserController@search')->name('search');
 
-    Route::post('addInventory', 'UserController@addInventory');
+    Route::match(['get', 'post'], '/editItem/{id?}', 'UserController@editItem')->name('editItem');
 
-    Route::get('search', 'UserController@search');
+    Route::delete('/deleteUtang/{id}', 'UserController@deleteUtang')->name('deleteUtang');
 
-    Route::delete('/utang/{id}', function($id) {
-        Nangutang::findOrFail($id)->delete();
-
-        return redirect('/');
-    });
-
-    Route::delete('/item/{id}', function($id) {
-        Items::findOrFail($id)->delete();
-
-        return redirect('/');
-    });
+    Route::delete('/deleteItem/{id}', 'UserController@deleteItem')->name('deleteItem');
 });

@@ -11,6 +11,7 @@ use App\Models\Items;
 class UserController extends Controller
 {
     public function getAllData() {
+        // dd('get data');
         $nangutang = DB::select('select * from nangutangs');
 
         $items = DB::select('select * from items');
@@ -22,70 +23,86 @@ class UserController extends Controller
     }
 
     public function addUtang(Request $request) {
-        $validator = $request->validate([
+        $request->validate([
             'first_name' => 'required|max:255',
             'middle_name' => 'required|max:255',
             'last_name' => 'required|max:255',
             'item' => 'required|max:255',
-            'quantity' => 'required',
-            'amount' => 'nullable'
+            'quantity' => 'required|numeric|min:1|max:1000000000',
         ]);
 
-        if (!$validator) {
-            return redirect('/')
-                ->withInput()
-                ->withErrors($validator);
-        } else {
+        $res = Items::whereItem($request->item)->get();
+        if(count($res) > 0) {
+            // dd($res[0]->item);
             $nangutang = new Nangutang;
             $nangutang->first_name = $request->first_name;
             $nangutang->middle_name = $request->middle_name;
             $nangutang->last_name = $request->last_name;
             $nangutang->item = $request->item;
             $nangutang->quantity = $request->quantity;
-            $nangutang->price = $request->price;
-            $nangutang->amount = $request->price * $request->quantity;
+            $nangutang->price = $res[0]->price;
+            $nangutang->amount = $res[0]->price * $request->quantity;
             $nangutang->save();
+
+            $res[0]->quantity = $res[0]->quantity - $request->quantity;
+            $res[0]->save();
 
             return redirect('/');
         }
+        
+        // dd("test");
     }
 
     public function utangEdit(Request $request) {
-        $utang = Nangutang::where('id',$request->id)->get();
-
-        $validate = $request->validate([
-            'first_name' => 'required|max:255',
-            'middle_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'item' => 'required|max:255',
-            'quantity' => 'required',
-            'amount' => 'nullable'
-        ]);
-
-        if (!$validate) {
-            return redirect('/')
-                ->withInput()
-                ->withErrors($validator);
-        } else {
-            $utang->first_name = $request->first_name;
-            $utang->middle_name = $request->middle_name;
-            $utang->last_name = $request->last_name;
-            $utang->item = $request->item;
-            $utang->quantity = $request->quantity;
-            $utang->price = $request->price;
-            $utang->amount = $request->price * $request->quantity;
-    
-            $utang->save();
-    
-            return redirect('/');
+        
+        if($request->isMethod('get')){
+            $utang = Nangutang::find($request->id);
+            return view('editUtang',['persons' => $utang]);
+        }elseif($request->isMethod('post')) {
+            $validate = $request->validate([
+                'first_name' => 'required|max:255',
+                'middle_name' => 'required|max:255',
+                'last_name' => 'required|max:255',
+                'item' => 'required|max:255',
+                'quantity' => 'required|numeric|min:1|max:1000000000',
+            ]);
+            $res = Items::whereItem($request->item)->get();
+            if(count($res) > 0) {
+                $utang = Nangutang::find($request->id);
+                $utang->first_name = $request->first_name;
+                $utang->middle_name = $request->middle_name;
+                $utang->last_name = $request->last_name;
+                $utang->item = $request->item;
+                
+                if($request->quantity > $utang->quantity) {
+                    // dd("greater");
+                    $res[0]->quantity = $res[0]->quantity - $request->quantity + $utang->quantity;
+                    $utang->quantity = $request->quantity;
+                    $utang->price = $res[0]->price;
+                    $utang->amount = $res[0]->price * $request->quantity;
+                    $utang->save();
+                    $res[0]->save();
+                    return redirect('/');
+                }else {
+                    $res[0]->quantity = $res[0]->quantity - $request->quantity + $utang->quantity;
+                    $utang->quantity = $request->quantity;
+                    $utang->price = $res[0]->price;
+                    $utang->amount = $res[0]->price * $request->quantity;
+                    $utang->save();
+                    $res[0]->save();
+                    return redirect('/');
+                }
+        
+                
+            }
         }
     }
 
     public function addInventory(Request $request) {
         $validator = $request->validate([
             'item' => 'required|max:255',
-            'quantity' => 'required',
-            'price' => 'required'
+            'quantity' => 'required|numeric|min:1|max:1000000000',
+            'price' => 'required|numeric|min:1|max:1000000000'
         ]);
 
         if (!$validator) {
@@ -104,28 +121,50 @@ class UserController extends Controller
     }
 
     public function search(Request $request) {
-        $person = Nangutang::whereFirstName($request->name)->get();
-        $item = Items::all();
-
-        return view('home',
+        if(empty($request->name)) {
+            return redirect('/');
+        } else {
+            $item = Items::all();
+            $person = Nangutang::whereFirstName($request->name)->get();
+            return view('home',
             ['nangutang' => $person],
             ['items'=> $item] 
         );
-    }
-    function welcome() {
-        return view('test.home');
+        }
     }
 
-    function addNangutang() {
-        return view('addNangutang');
+    // Edit item
+    public function editItem(Request $request) {
+
+        if($request->isMethod('get')){
+            $item = Items::find($request->id);
+            return view('editItem',['item' => $item]);
+        }elseif($request->isMethod('post')) {
+            $validate = $request->validate([
+                'item' => 'required|max:255',
+                'quantity' => 'required|numeric|min:1|max:1000000000',
+                'price' => 'required|numeric|min:1|max:1000000000'
+            ]); 
+    
+            $item = Items::find($request->id);
+            $item->item = $request->item;
+            $item->quantity = $request->quantity;
+            $item->price = $request->price;
+            $item->save();
+
+            return redirect('/');
+        }
+    }
+   
+    public function deleteUtang(Request $request) {
+        Nangutang::findOrFail($request->id)->delete();
+
+        return redirect('/');
     }
 
-    public function editUtang() {
-        
-        return view('editUtang');
-    }
+    public function deleteItem(Request $request) {
+        Items::findOrFail($request->id)->delete();
 
-    function addItem() {
-        return view('   addItem');
+        return redirect('/');
     }
 }

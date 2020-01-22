@@ -18,46 +18,31 @@
 <body>
     <div class="container">
         <div class="card card-small" style="margin-top: 50px; margin-bottom: 50px">
-            <form class="register-form" id="register-form" action="{{ route('editUtang',$persons->id)}}" method="POST"
+            <form class="register-form" id="register-form" action="{{ route('editItem',$item->id)}}" method="POST"
                 autocomplete="off">
                 @csrf
                 <div class="card-header text-center">
-                    <h2 class="form-title">Update Utang</h2>
+                    <h2 class="form-title">Update Item</h2>
                 </div>
                 <div class="card-body">
-                    @if (count($persons) > 0)
+                    @if (count($item) > 0)
                     <div>
-                        <input name="id" type="text" value="{{ $persons->id}}" hidden />
-                    </div>
-                    <div class="form-group">
-                        <label for="name">First name</label>
-                        <input class="form-control" type="text" name="first_name" id="first_name"
-                            value="{{old('first_name',$persons['first_name'])}}" />
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Middle name</label>
-                        <input class="form-control" type="text" name="middle_name" id="middle_name"
-                            value="{{old('middle_name',$persons['middle_name'])}}" />
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Last name</i></label>
-                        <input class="form-control" type="text" name="last_name" id="last_name"
-                            value="{{old('last_name',$persons['last_name'])}}" />
+                        <input name="id" type="text" value="{{ $item->id}}" hidden />
                     </div>
                     <div class="form-group">
                         <label for="item">Item</label>
                         <input class="form-control" type="text" name="item" id="item"
-                            value="{{old('item',$persons['item'])}}" />
+                            value="{{old('item',$item['item'])}}" />
                     </div>
                     <div class="form-group">
                         <label for="pass">Quantity</label>
                         <input class="form-control" type="number" name="quantity" id="quantity"
-                            value="{{old('quantity',$persons['quantity'])}}" />
+                            value="{{old('quantity',$item['quantity'])}}" />
                     </div>
                     <div class="form-group">
                         <label for="re-pass">Price</label>
                         <input class="form-control" type="number" name="price" id="price"
-                            value="{{old('price',$persons['price'])}}" />
+                            value="{{old('price',$item['price'])}}" />
                     </div>
                     @endif
                 </div>
