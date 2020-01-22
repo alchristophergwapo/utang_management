@@ -57,7 +57,8 @@ class UserController extends Controller
         
         if($request->isMethod('get')){
             $utang = Nangutang::find($request->id);
-            return view('editUtang',['persons' => $utang]);
+            $item = Items::all();
+            return view('editUtang',['persons' => $utang], ['items' => $item]);
         }elseif($request->isMethod('post')) {
             $validate = $request->validate([
                 'first_name' => 'required|max:255',

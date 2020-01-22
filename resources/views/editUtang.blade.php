@@ -44,11 +44,16 @@
                         <input class="form-control" type="text" name="last_name" id="last_name"
                             value="{{old('last_name',$persons['last_name'])}}" />
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="item">Item</label>
                         <input class="form-control" type="text" name="item" id="item"
                             value="{{old('item',$persons['item'])}}" />
-                    </div>
+                    </div> -->
+                    <select name="item" id="item">
+                        @foreach ($items as $i)
+                            <option value="{{ $i->item}}">{{ $i->item }}</option>
+                        @endforeach
+                    </select>
                     <div class="form-group">
                         <label for="pass">Quantity</label>
                         <input class="form-control" type="number" name="quantity" id="quantity"
