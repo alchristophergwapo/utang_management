@@ -12,11 +12,11 @@ class UserController extends Controller
 {
     public function getAllData() {
         // dd('get data');
-        $nangutang = DB::select('select * from nangutangs');
+        $nangutang = DB::table('nangutangs')->paginate(5);
 
-        $items = DB::select('select * from items');
+        $items = DB::table('items')->paginate(5);
 
-        return view('home', 
+        return view('home',     
             ['nangutang' => $nangutang],
             ['items' => $items]
         );
@@ -59,14 +59,15 @@ class UserController extends Controller
             $utang = Nangutang::find($request->id);
             $item = Items::all();
             return view('editUtang',['persons' => $utang], ['items' => $item]);
-        }elseif($request->isMethod('post')) {
-            $validate = $request->validate([
+        }else {
+            $validator = $request->validate([
                 'first_name' => 'required|max:255',
                 'middle_name' => 'required|max:255',
                 'last_name' => 'required|max:255',
                 'item' => 'required|max:255',
                 'quantity' => 'required|numeric|min:1|max:1000000000',
             ]);
+            
             $res = Items::whereItem($request->item)->get();
             if(count($res) > 0) {
                 $utang = Nangutang::find($request->id);
@@ -76,7 +77,6 @@ class UserController extends Controller
                 $utang->item = $request->item;
                 
                 if($request->quantity > $utang->quantity) {
-                    // dd("greater");
                     $res[0]->quantity = $res[0]->quantity - $request->quantity + $utang->quantity;
                     $utang->quantity = $request->quantity;
                     $utang->price = $res[0]->price;
@@ -93,9 +93,11 @@ class UserController extends Controller
                     $res[0]->save();
                     return redirect('/');
                 }
-        
-                
             }
+
+            // $utang = Nangutang::find($request->id);
+            // $item = Items::all();
+            // return view('editUtang',['persons' => $utang], ['items' => $item]);
         }
     }
 
