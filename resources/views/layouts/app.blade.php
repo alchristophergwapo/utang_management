@@ -66,7 +66,8 @@
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0" method="GET" action="{{ route('search')  }}">
-                        {{ csrf_field() }}
+                        <!-- {{ csrf_field() }} -->
+                        @csrf
                         <div class="input-group">
                             <input type="text" name="name" class="form-control" placeholder="Search">
                             <div class="input-group-append">

@@ -127,7 +127,7 @@ class UserController extends Controller
         if(empty($request->name)) {
             return redirect('/');
         } else {
-            $item = Items::all();
+            $item = DB::table('items')->paginate(5);
             $person = Nangutang::whereFirstName($request->name)->get();
             return view('home',
             ['nangutang' => $person],
